@@ -6,8 +6,8 @@
         <mxCell id="1" parent="0"/>
 
         <!-- Title -->
-        <mxCell id="title" value="&lt;b&gt;Multi-Site EVPN VXLAN Fabric&lt;/b&gt;&lt;br&gt;5-Stage Clos Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=18;" vertex="1" parent="1">
-          <mxGeometry x="550" y="20" width="300" height="40" as="geometry"/>
+        <mxCell id="title" value="&lt;b&gt;Multi-Site EVPN VXLAN Fabric&lt;/b&gt;&lt;br&gt;5-Stage Clos Architecture&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;Click devices to view configs&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="550" y="15" width="300" height="50" as="geometry"/>
         </mxCell>
 
         <!-- Super-Spine Layer Box -->
@@ -18,14 +18,16 @@
           <mxGeometry x="630" y="75" width="140" height="30" as="geometry"/>
         </mxCell>
 
-        <!-- Super-Spine-1 -->
-        <mxCell id="ss1" value="&lt;b&gt;Super-Spine-1&lt;/b&gt;&lt;br&gt;AS 65000&lt;br&gt;10.0.0.1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#000000;" vertex="1" parent="1">
+        <!-- Super-Spine-1 (Clickable) -->
+        <mxCell id="ss1" value="&lt;b&gt;Super-Spine-1&lt;/b&gt;&lt;br&gt;AS 65000&lt;br&gt;192.168.30.118" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#000000;" vertex="1" parent="1">
           <mxGeometry x="520" y="105" width="120" height="55" as="geometry"/>
+          <UserObject label="" link="https://github.com/Enizaksoy/cisco-multi-site-evpn-implementation/blob/main/configs/Super-Spine-1.cfg" linkTarget="_blank"/>
         </mxCell>
 
-        <!-- Super-Spine-2 -->
-        <mxCell id="ss2" value="&lt;b&gt;Super-Spine-2&lt;/b&gt;&lt;br&gt;AS 65000&lt;br&gt;10.0.0.2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#000000;" vertex="1" parent="1">
+        <!-- Super-Spine-2 (Clickable) -->
+        <mxCell id="ss2" value="&lt;b&gt;Super-Spine-2&lt;/b&gt;&lt;br&gt;AS 65000&lt;br&gt;192.168.30.119" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#000000;" vertex="1" parent="1">
           <mxGeometry x="760" y="105" width="120" height="55" as="geometry"/>
+          <UserObject label="" link="https://github.com/Enizaksoy/cisco-multi-site-evpn-implementation/blob/main/configs/Super-Spine-2.cfg" linkTarget="_blank"/>
         </mxCell>
 
         <!-- POD 1 Box -->
@@ -44,69 +46,81 @@
           <mxGeometry x="920" y="205" width="80" height="25" as="geometry"/>
         </mxCell>
 
-        <!-- POD 1 Spines -->
-        <mxCell id="spine1" value="&lt;b&gt;Spine-1&lt;/b&gt;&lt;br&gt;AS 65001&lt;br&gt;10.2.1.0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+        <!-- POD 1 Spines (Clickable) -->
+        <mxCell id="spine1" value="&lt;b&gt;Spine-1&lt;/b&gt;&lt;br&gt;AS 65001&lt;br&gt;192.168.30.110" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
           <mxGeometry x="60" y="250" width="100" height="50" as="geometry"/>
+          <UserObject label="" link="https://github.com/Enizaksoy/cisco-multi-site-evpn-implementation/blob/main/configs/Spine-1.cfg" linkTarget="_blank"/>
         </mxCell>
-        <mxCell id="spine2" value="&lt;b&gt;Spine-2&lt;/b&gt;&lt;br&gt;AS 65002&lt;br&gt;10.2.2.0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+        <mxCell id="spine2" value="&lt;b&gt;Spine-2&lt;/b&gt;&lt;br&gt;AS 65002&lt;br&gt;192.168.30.111" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
           <mxGeometry x="190" y="250" width="100" height="50" as="geometry"/>
+          <UserObject label="" link="https://github.com/Enizaksoy/cisco-multi-site-evpn-implementation/blob/main/configs/Spine-2.cfg" linkTarget="_blank"/>
         </mxCell>
-        <mxCell id="spine3" value="&lt;b&gt;Spine-3&lt;/b&gt;&lt;br&gt;AS 65003&lt;br&gt;10.2.3.0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+        <mxCell id="spine3" value="&lt;b&gt;Spine-3&lt;/b&gt;&lt;br&gt;AS 65003&lt;br&gt;192.168.30.112" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
           <mxGeometry x="320" y="250" width="100" height="50" as="geometry"/>
+          <UserObject label="" link="https://github.com/Enizaksoy/cisco-multi-site-evpn-implementation/blob/main/configs/Spine-3.cfg" linkTarget="_blank"/>
         </mxCell>
-        <mxCell id="spine4" value="&lt;b&gt;Spine-4&lt;/b&gt;&lt;br&gt;AS 65004&lt;br&gt;10.2.4.0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+        <mxCell id="spine4" value="&lt;b&gt;Spine-4&lt;/b&gt;&lt;br&gt;AS 65004&lt;br&gt;192.168.30.113" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
           <mxGeometry x="450" y="250" width="100" height="50" as="geometry"/>
+          <UserObject label="" link="https://github.com/Enizaksoy/cisco-multi-site-evpn-implementation/blob/main/configs/Spine-4.cfg" linkTarget="_blank"/>
         </mxCell>
 
-        <!-- POD 2 Spines -->
-        <mxCell id="spine5" value="&lt;b&gt;Spine-5&lt;/b&gt;&lt;br&gt;AS 65005&lt;br&gt;10.2.5.0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+        <!-- POD 2 Spines (Clickable) -->
+        <mxCell id="spine5" value="&lt;b&gt;Spine-5&lt;/b&gt;&lt;br&gt;AS 65005&lt;br&gt;192.168.30.122" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
           <mxGeometry x="840" y="250" width="100" height="50" as="geometry"/>
+          <UserObject label="" link="https://github.com/Enizaksoy/cisco-multi-site-evpn-implementation/blob/main/configs/Spine-5.cfg" linkTarget="_blank"/>
         </mxCell>
-        <mxCell id="spine6" value="&lt;b&gt;Spine-6&lt;/b&gt;&lt;br&gt;AS 65006&lt;br&gt;10.2.6.0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+        <mxCell id="spine6" value="&lt;b&gt;Spine-6&lt;/b&gt;&lt;br&gt;AS 65006&lt;br&gt;192.168.30.123" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
           <mxGeometry x="980" y="250" width="100" height="50" as="geometry"/>
+          <UserObject label="" link="https://github.com/Enizaksoy/cisco-multi-site-evpn-implementation/blob/main/configs/Spine-6.cfg" linkTarget="_blank"/>
         </mxCell>
 
-        <!-- POD 1 Leafs -->
-        <mxCell id="leaf1" value="&lt;b&gt;Leaf-1&lt;/b&gt;&lt;br&gt;AS 65101&lt;br&gt;VTEP: 10.0.2.1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+        <!-- POD 1 Leafs (Clickable) -->
+        <mxCell id="leaf1" value="&lt;b&gt;Leaf-1&lt;/b&gt;&lt;br&gt;AS 65101&lt;br&gt;192.168.30.114" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
           <mxGeometry x="60" y="380" width="100" height="55" as="geometry"/>
+          <UserObject label="" link="https://github.com/Enizaksoy/cisco-multi-site-evpn-implementation/blob/main/configs/Leaf-1.cfg" linkTarget="_blank"/>
         </mxCell>
-        <mxCell id="leaf2" value="&lt;b&gt;Leaf-2&lt;/b&gt;&lt;br&gt;AS 65102&lt;br&gt;VTEP: 10.0.2.2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+        <mxCell id="leaf2" value="&lt;b&gt;Leaf-2&lt;/b&gt;&lt;br&gt;AS 65102&lt;br&gt;192.168.30.115" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
           <mxGeometry x="190" y="380" width="100" height="55" as="geometry"/>
+          <UserObject label="" link="https://github.com/Enizaksoy/cisco-multi-site-evpn-implementation/blob/main/configs/Leaf-2.cfg" linkTarget="_blank"/>
         </mxCell>
-        <mxCell id="leaf3" value="&lt;b&gt;Leaf-3&lt;/b&gt;&lt;br&gt;AS 65103&lt;br&gt;VTEP: 10.0.2.3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+        <mxCell id="leaf3" value="&lt;b&gt;Leaf-3&lt;/b&gt;&lt;br&gt;AS 65103&lt;br&gt;192.168.30.116" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
           <mxGeometry x="320" y="380" width="100" height="55" as="geometry"/>
+          <UserObject label="" link="https://github.com/Enizaksoy/cisco-multi-site-evpn-implementation/blob/main/configs/Leaf-3.cfg" linkTarget="_blank"/>
         </mxCell>
-        <mxCell id="leaf4" value="&lt;b&gt;Leaf-4&lt;/b&gt;&lt;br&gt;AS 65104&lt;br&gt;VTEP: 10.0.2.4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+        <mxCell id="leaf4" value="&lt;b&gt;Leaf-4&lt;/b&gt;&lt;br&gt;AS 65104&lt;br&gt;192.168.30.117" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
           <mxGeometry x="450" y="380" width="100" height="55" as="geometry"/>
+          <UserObject label="" link="https://github.com/Enizaksoy/cisco-multi-site-evpn-implementation/blob/main/configs/Leaf-4.cfg" linkTarget="_blank"/>
         </mxCell>
 
-        <!-- POD 2 Leafs -->
-        <mxCell id="leaf5" value="&lt;b&gt;Leaf-5&lt;/b&gt;&lt;br&gt;AS 65105&lt;br&gt;VTEP: 10.0.2.5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+        <!-- POD 2 Leafs (Clickable) -->
+        <mxCell id="leaf5" value="&lt;b&gt;Leaf-5&lt;/b&gt;&lt;br&gt;AS 65105&lt;br&gt;192.168.30.120" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
           <mxGeometry x="840" y="380" width="100" height="55" as="geometry"/>
+          <UserObject label="" link="https://github.com/Enizaksoy/cisco-multi-site-evpn-implementation/blob/main/configs/Leaf-5.cfg" linkTarget="_blank"/>
         </mxCell>
-        <mxCell id="leaf6" value="&lt;b&gt;Leaf-6&lt;/b&gt;&lt;br&gt;AS 65106&lt;br&gt;VTEP: 10.0.2.6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+        <mxCell id="leaf6" value="&lt;b&gt;Leaf-6&lt;/b&gt;&lt;br&gt;AS 65106&lt;br&gt;192.168.30.121" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
           <mxGeometry x="980" y="380" width="100" height="55" as="geometry"/>
+          <UserObject label="" link="https://github.com/Enizaksoy/cisco-multi-site-evpn-implementation/blob/main/configs/Leaf-6.cfg" linkTarget="_blank"/>
         </mxCell>
 
         <!-- POD 1 IOSvL2 -->
-        <mxCell id="iosvl2-0" value="&lt;b&gt;iosvl2-0&lt;/b&gt;&lt;br&gt;Access" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+        <mxCell id="iosvl2-0" value="&lt;b&gt;iosvl2-0&lt;/b&gt;&lt;br&gt;192.168.30.130" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
           <mxGeometry x="70" y="510" width="80" height="40" as="geometry"/>
         </mxCell>
-        <mxCell id="iosvl2-1" value="&lt;b&gt;iosvl2-1&lt;/b&gt;&lt;br&gt;Access" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+        <mxCell id="iosvl2-1" value="&lt;b&gt;iosvl2-1&lt;/b&gt;&lt;br&gt;192.168.30.131" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
           <mxGeometry x="200" y="510" width="80" height="40" as="geometry"/>
         </mxCell>
-        <mxCell id="iosvl2-2" value="&lt;b&gt;iosvl2-2&lt;/b&gt;&lt;br&gt;Access" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+        <mxCell id="iosvl2-2" value="&lt;b&gt;iosvl2-2&lt;/b&gt;&lt;br&gt;192.168.30.132" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
           <mxGeometry x="330" y="510" width="80" height="40" as="geometry"/>
         </mxCell>
-        <mxCell id="iosvl2-3" value="&lt;b&gt;iosvl2-3&lt;/b&gt;&lt;br&gt;Access" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+        <mxCell id="iosvl2-3" value="&lt;b&gt;iosvl2-3&lt;/b&gt;&lt;br&gt;192.168.30.133" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
           <mxGeometry x="460" y="510" width="80" height="40" as="geometry"/>
         </mxCell>
 
         <!-- POD 2 IOSvL2 -->
-        <mxCell id="iosvl2-4" value="&lt;b&gt;iosvl2-4&lt;/b&gt;&lt;br&gt;Access" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+        <mxCell id="iosvl2-4" value="&lt;b&gt;iosvl2-4&lt;/b&gt;&lt;br&gt;192.168.30.134" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
           <mxGeometry x="850" y="510" width="80" height="40" as="geometry"/>
         </mxCell>
-        <mxCell id="iosvl2-5" value="&lt;b&gt;iosvl2-5&lt;/b&gt;&lt;br&gt;Access" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+        <mxCell id="iosvl2-5" value="&lt;b&gt;iosvl2-5&lt;/b&gt;&lt;br&gt;192.168.30.135" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
           <mxGeometry x="990" y="510" width="80" height="40" as="geometry"/>
         </mxCell>
 
@@ -268,8 +282,8 @@
         <mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
           <mxGeometry x="800" y="590" width="320" height="80" as="geometry"/>
         </mxCell>
-        <mxCell id="legend-title" value="&lt;b&gt;Legend&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;" vertex="1" parent="1">
-          <mxGeometry x="810" y="595" width="60" height="15" as="geometry"/>
+        <mxCell id="legend-title" value="&lt;b&gt;Legend&lt;/b&gt; (Click devices for configs)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="810" y="595" width="180" height="15" as="geometry"/>
         </mxCell>
         <mxCell id="legend-ss" value="Super-Spine (AS 65000)" style="text;html=1;strokeColor=none;fillColor=#fff2cc;align=left;fontSize=9;spacingLeft=5;" vertex="1" parent="1">
           <mxGeometry x="810" y="612" width="140" height="15" as="geometry"/>
