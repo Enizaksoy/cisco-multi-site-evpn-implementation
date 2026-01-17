@@ -303,22 +303,148 @@ Neighbor        V    AS    State/PfxRcd
 | Leaf-5 | 5 Up | 1 peer (Leaf-6) | 2 spines Up |
 | Leaf-6 | 5 Up | 1 peer (Leaf-5) | 2 spines Up |
 
-### Known Issues
+### Known Issues & Next Steps
 
-1. **Super-Spine BGP Idle** - Underlay connectivity issue between Super-Spines and Spines
-   - Super-Spine-1 neighbors (10.1.1.1, 10.1.1.3, 10.1.1.5, 10.1.1.7) all show Idle
-   - Need to verify underlay routing/interfaces in CML
+#### ⚠️ Issue 1: Super-Spine BGP Idle (NEEDS FIX)
+- **Problem:** Super-Spine-1/2 BGP neighbors to Spines all show Idle
+- **Impact:** POD1 and POD2 cannot exchange EVPN routes (isolated)
+- **Root Cause:** Underlay connectivity between Super-Spines and Spines
+- **Debug Commands:**
+  ```
+  # On Super-Spine-1:
+  show ip int brief              # Check underlay interfaces
+  show ip route                  # Check routing to spine loopbacks
+  ping 10.1.1.1                  # Test connectivity to Spine-1
+  show bgp l2vpn evpn neighbors  # Detailed BGP state
 
-2. **IOSvL2 Trunks Not Configured** - Access switches need trunk config
-   - G0/1 is currently in access mode (VLAN 1)
-   - Need to configure as trunk with VLANs 10,20,40
-   - Fix command:
-     ```
-     interface g0/1
-       switchport trunk encapsulation dot1q
-       switchport mode trunk
-       switchport trunk allowed vlan 10,20,40
-     ```
+  # On Spine-1:
+  show ip route 10.0.0.1         # Route to Super-Spine-1
+  ping 10.0.0.1                  # Test reachability
+  ```
+- **Fix:** Verify/configure underlay interfaces and OSPF/static routes in CML
+
+#### ✅ Issue 2: IOSvL2 Trunks (FIXED)
+- **Status:** Configured on iosvl2-0, iosvl2-1, iosvl2-4, iosvl2-5
+- **Remaining:** Configure on iosvl2-2, iosvl2-3
+- **Config applied:**
+  ```
+  conf t
+  interface g0/1
+    switchport trunk encapsulation dot1q
+    switchport mode trunk
+    switchport trunk allowed vlan 10,20,40
+  end
+  write
+  ```
+
+#### ✅ Issue 3: IOSvL2 Gateway Routes (FIXED)
+- **Status:** Configured on iosvl2-0, iosvl2-1, iosvl2-4, iosvl2-5
+- **Config applied:**
+  ```
+  conf t
+  ip routing
+  ip route 192.168.10.0 255.255.255.0 Vlan10 192.168.10.1
+  ip route 192.168.20.0 255.255.255.0 Vlan20 192.168.20.1
+  ip route 192.168.40.0 255.255.255.0 Vlan40 192.168.40.1
+  end
+  write
+  ```
+
+---
+
+## IOSvL2 Complete Configuration
+
+### iosvl2-0 (Connected to Leaf-1)
+```
+hostname iosvl2-0
+!
+vlan 10
+ name VLAN10_Data
+vlan 20
+ name VLAN20_Voice
+vlan 40
+ name VLAN40_Guest
+!
+interface Vlan1
+ ip address 192.168.30.130 255.255.255.0
+!
+interface Vlan10
+ ip address 192.168.10.10 255.255.255.0
+!
+interface Vlan20
+ ip address 192.168.20.10 255.255.255.0
+!
+interface Vlan40
+ ip address 192.168.40.10 255.255.255.0
+!
+interface GigabitEthernet0/1
+ description To Leaf-1 E1/5
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,40
+!
+ip routing
+ip route 192.168.10.0 255.255.255.0 Vlan10 192.168.10.1
+ip route 192.168.20.0 255.255.255.0 Vlan20 192.168.20.1
+ip route 192.168.40.0 255.255.255.0 Vlan40 192.168.40.1
+```
+
+### IOSvL2 IP Address Table
+| Device | Vlan1 (Mgmt) | Vlan10 | Vlan20 | Vlan40 |
+|--------|--------------|--------|--------|--------|
+| iosvl2-0 | 192.168.30.130 | 192.168.10.10 | 192.168.20.10 | 192.168.40.10 |
+| iosvl2-1 | 192.168.30.131 | 192.168.10.11 | 192.168.20.11 | 192.168.40.11 |
+| iosvl2-2 | 192.168.30.132 | 192.168.10.12 | 192.168.20.12 | 192.168.40.12 |
+| iosvl2-3 | 192.168.30.133 | 192.168.10.13 | 192.168.20.13 | 192.168.40.13 |
+| iosvl2-4 | 192.168.30.134 | 192.168.10.14 | 192.168.20.14 | 192.168.40.14 |
+| iosvl2-5 | 192.168.30.135 | 192.168.10.15 | 192.168.20.15 | 192.168.40.15 |
+
+---
+
+## Verification Commands Cheat Sheet
+
+### VXLAN EVPN Verification (Leaf)
+```
+show nve vni                          # VNI status (should be Up)
+show nve peers                        # VXLAN tunnel peers
+show nve interface nve1               # NVE interface status
+show bgp l2vpn evpn summary           # BGP EVPN neighbors
+show bgp l2vpn evpn                   # EVPN routes received
+show l2route evpn mac all             # MAC addresses learned via EVPN
+show ip arp vrf mylab                 # ARP table in VRF
+show mac address-table vlan 10        # MAC table for VLAN
+show vxlan                            # VLAN to VNI mapping
+```
+
+### BGP EVPN Verification (Spine)
+```
+show bgp l2vpn evpn summary           # BGP EVPN neighbors
+show bgp l2vpn evpn                   # EVPN routes (Type-2, Type-3, Type-5)
+show ip route                         # Underlay routing
+```
+
+### IOSvL2 Verification
+```
+show int g0/1 trunk                   # Trunk status
+show int g0/1 switchport              # Switchport mode
+show spanning-tree vlan 10            # STP state
+show vlan brief                       # VLAN membership
+show ip int brief                     # Interface IPs
+show arp                              # ARP table
+show mac address-table                # MAC table
+```
+
+### Ping Tests (from IOSvL2)
+```
+# Test gateway connectivity
+ping 192.168.10.1 source Vlan10       # Leaf anycast gateway
+
+# Test cross-switch connectivity (same POD)
+ping 192.168.10.11 source Vlan10      # iosvl2-0 to iosvl2-1
+
+# Test cross-POD connectivity (requires Super-Spine fix)
+ping 192.168.10.14 source Vlan10      # iosvl2-0 to iosvl2-4
+```
 
 ---
 
