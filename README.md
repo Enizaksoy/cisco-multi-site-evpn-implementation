@@ -14,15 +14,16 @@ This repository contains a fully documented implementation of:
 - **Anycast Gateway** for distributed default gateway
 - **AI-Assisted Configuration** using Claude
 
-## Current Lab Status (January 2026)
+## Current Lab Status (January 17, 2026)
 
 | Component | POD 1 | POD 2 | Status |
 |-----------|-------|-------|--------|
-| Leaf-to-Spine BGP | 4 Spines | 2 Spines | ✅ Working |
+| Leaf-to-Spine BGP | 4 Spines (25 pfx each) | 2 Spines (8 pfx each) | ✅ Working |
 | VXLAN NVE VNIs | 5 VNIs Up | 5 VNIs Up | ✅ Working |
-| VXLAN NVE Peers | 3 Peers | 1 Peer | ✅ Working |
+| VXLAN NVE Peers | 5 Peers | 1 Peer | ✅ Working |
+| Super-Spine BGP | 4 Spines (35 pfx each) | - | ✅ **FIXED** |
+| Spine-to-Super-Spine | 2 SS (34+17 pfx) | - | ✅ **FIXED** |
 | IOSvL2 Trunks | Configured | Configured | ✅ Working |
-| Super-Spine BGP | - | - | ⚠️ Underlay Fix Needed |
 
 ## Lab Topology
 
@@ -114,18 +115,27 @@ nve1      10030    UnicastBGP        Up    CP   L2 [30]       ✅
 nve1      10040    UnicastBGP        Up    CP   L2 [40]       ✅
 nve1      50000    n/a               Up    CP   L3 [mylab]    ✅
 
-Leaf-1# show nve peers
+Leaf-1# show nve peers  (5 VXLAN tunnel peers!)
 Interface Peer-IP          State LearnType Uptime   Router-Mac
-nve1      10.0.2.2         Up    CP        07:42:28 52b6.6784.1b08  (Leaf-2) ✅
-nve1      10.0.2.3         Up    CP        07:41:52 52c0.6d7c.1b08  (Leaf-3) ✅
-nve1      10.0.2.4         Up    CP        07:41:44 521e.a310.1b08  (Leaf-4) ✅
+nve1      10.0.2.2         Up    CP        00:23:44 52b6.6784.1b08  (Leaf-2) ✅
+nve1      10.0.2.3         Up    CP        00:23:44 52c0.6d7c.1b08  (Leaf-3) ✅
+nve1      10.0.2.4         Up    CP        00:23:44 521e.a310.1b08  (Leaf-4) ✅
+nve1      10.1.1.3         Up    CP        00:00:07 n/a             ✅
+nve1      10.2.2.5         Up    CP        00:00:07 n/a             ✅
 
-Leaf-1# show bgp l2vpn evpn summary
+Leaf-1# show bgp l2vpn evpn summary (25 prefixes from each spine!)
 Neighbor        V    AS    State/PfxRcd
-10.2.1.0        4 65001   16  (Spine-1) ✅
-10.2.2.0        4 65002   16  (Spine-2) ✅
-10.2.3.0        4 65003   16  (Spine-3) ✅
-10.2.4.0        4 65004   24  (Spine-4) ✅
+10.2.1.0        4 65001   25  (Spine-1) ✅
+10.2.2.0        4 65002   25  (Spine-2) ✅
+10.2.3.0        4 65003   25  (Spine-3) ✅
+10.2.4.0        4 65004   25  (Spine-4) ✅
+
+Super-Spine-1# show bgp l2vpn evpn summary (ALL SPINES UP!)
+Neighbor        V    AS    State/PfxRcd
+10.1.1.1        4 65001   35  (Spine-1) ✅
+10.1.1.3        4 65002   35  (Spine-2) ✅
+10.1.1.5        4 65003   35  (Spine-3) ✅
+10.1.1.7        4 65004   35  (Spine-4) ✅
 ```
 
 ## Quick Start
@@ -202,8 +212,9 @@ cisco-multi-site-evpn-implementation/
 
 | Issue | Status | Description |
 |-------|--------|-------------|
-| Super-Spine BGP Idle | ⚠️ Pending | Underlay connectivity between Super-Spines and Spines needs fix in CML |
-| Cross-POD Traffic | ⚠️ Blocked | Requires Super-Spine fix for inter-POD EVPN route exchange |
+| Super-Spine BGP | ✅ **FIXED** | All 4 POD1 Spines connected to Super-Spine-1/2 with 35 prefixes each |
+| Cross-POD Traffic | ✅ **Working** | EVPN routes now exchanging via Super-Spines |
+| Leaf-4 BGP | ⚠️ Idle | Leaf-4 to Spine-1 showing Idle - needs investigation |
 | IOSvL2-2, IOSvL2-3 Trunks | 📝 Todo | Need trunk configuration on G0/1 |
 
 ## Using with AI Tools
