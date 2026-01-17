@@ -174,8 +174,84 @@ interface Vlan40
 |-----------|-------|-------|
 | Leaf-to-Spine BGP | ✅ Working | ✅ Working |
 | VXLAN NVE Peers | ✅ Up (3 peers) | ✅ Up (1 peer) |
-| Super-Spine BGP | ⚠️ Idle | N/A |
+| Super-Spine BGP | ⚠️ Idle (underlay issue) | N/A |
 | IOSvL2 VLANs | ✅ Configured | ✅ Configured |
+| IOSvL2 Trunks | ⚠️ Need Config | ⚠️ Need Config |
+
+### Verification Commands Output (Jan 16, 2026)
+
+#### Leaf-1 BGP EVPN Summary
+```
+BGP router identifier 10.0.2.1, local AS number 65101
+BGP table version is 98, L2VPN EVPN config peers 4, capable peers 4
+
+Neighbor        V    AS    MsgRcvd    MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+10.2.1.0        4 65001        594        549       98    0    0 08:59:57 16
+10.2.2.0        4 65002        595        550       98    0    0 09:00:02 16
+10.2.3.0        4 65003        595        548       98    0    0 08:59:56 16
+10.2.4.0        4 65004        615        550       98    0    0 08:59:57 24
+```
+
+#### Leaf-1 NVE Peers (VXLAN Tunnels)
+```
+Interface Peer-IP          State LearnType Uptime   Router-Mac
+nve1      10.0.2.2         Up    CP        07:35:37 52b6.6784.1b08
+nve1      10.0.2.3         Up    CP        07:35:01 52c0.6d7c.1b08
+nve1      10.0.2.4         Up    CP        07:34:53 521e.a310.1b08
+```
+
+#### Leaf-1 NVE VNI Status
+```
+Interface VNI      State Mode Type [BD/VRF]
+nve1      10010    Up    CP   L2 [10]       (VLAN 10)
+nve1      10020    Up    CP   L2 [20]       (VLAN 20)
+nve1      10030    Up    CP   L2 [30]       (VLAN 30)
+nve1      10040    Up    CP   L2 [40]       (VLAN 40)
+nve1      50000    Up    CP   L3 [mylab]    (L3VNI)
+```
+
+#### Spine-1 BGP EVPN Summary
+```
+BGP router identifier 10.0.1.1, local AS number 65001
+Neighbor        V    AS    State/PfxRcd
+10.1.1.0        4 65000   Idle          (Super-Spine-1)
+10.1.1.8        4 65000   Idle          (Super-Spine-2)
+10.2.1.1        4 65101   16            (Leaf-1) ✅
+10.2.1.3        4 65102   16            (Leaf-2) ✅
+10.2.1.5        4 65103   16            (Leaf-3) ✅
+10.2.1.7        4 65104   Idle          (Leaf-4)
+```
+
+#### Leaf-5 (POD 2) BGP EVPN Summary
+```
+BGP router identifier 10.0.2.5, local AS number 65105
+Neighbor        V    AS    State/PfxRcd
+10.2.5.0        4 65005   8             (Spine-5) ✅
+10.2.6.0        4 65006   8             (Spine-6) ✅
+```
+
+#### Leaf-5 NVE Peers
+```
+Interface Peer-IP          State LearnType Uptime   Router-Mac
+nve1      10.0.2.6         Up    CP        06:07:59 5227.4721.1b08   (Leaf-6)
+```
+
+### Known Issues
+
+1. **Super-Spine BGP Idle** - Underlay connectivity issue between Super-Spines and Spines
+   - Super-Spine-1 neighbors (10.1.1.1, 10.1.1.3, 10.1.1.5, 10.1.1.7) all show Idle
+   - Need to verify underlay routing/interfaces in CML
+
+2. **IOSvL2 Trunks Not Configured** - Access switches need trunk config
+   - G0/1 is currently in access mode (VLAN 1)
+   - Need to configure as trunk with VLANs 10,20,40
+   - Fix command:
+     ```
+     interface g0/1
+       switchport trunk encapsulation dot1q
+       switchport mode trunk
+       switchport trunk allowed vlan 10,20,40
+     ```
 
 ---
 
