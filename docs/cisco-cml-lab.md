@@ -172,69 +172,136 @@ interface Vlan40
 
 | Component | POD 1 | POD 2 |
 |-----------|-------|-------|
-| Leaf-to-Spine BGP | ✅ Working | ✅ Working |
+| Leaf-to-Spine BGP | ✅ Working (4 spines) | ✅ Working (2 spines) |
+| VXLAN NVE VNIs | ✅ All 5 Up | ✅ All 5 Up |
 | VXLAN NVE Peers | ✅ Up (3 peers) | ✅ Up (1 peer) |
 | Super-Spine BGP | ⚠️ Idle (underlay issue) | N/A |
 | IOSvL2 VLANs | ✅ Configured | ✅ Configured |
-| IOSvL2 Trunks | ⚠️ Need Config | ⚠️ Need Config |
+| IOSvL2 Trunks | ✅ Configured | ✅ Configured |
+| IOSvL2 Gateways | ✅ Configured | ✅ Configured |
 
-### Verification Commands Output (Jan 16, 2026)
+### Verification Commands Output (Jan 17, 2026)
+
+#### Leaf-1 NVE VNI Status - ✅ ALL UP
+```
+Leaf-1# show nve vni
+Interface VNI      Multicast-group   State Mode Type [BD/VRF]
+nve1      10010    UnicastBGP        Up    CP   L2 [10]       ✅
+nve1      10020    UnicastBGP        Up    CP   L2 [20]       ✅
+nve1      10030    UnicastBGP        Up    CP   L2 [30]       ✅
+nve1      10040    UnicastBGP        Up    CP   L2 [40]       ✅
+nve1      50000    n/a               Up    CP   L3 [mylab]    ✅
+```
+
+#### Leaf-1 NVE Peers (VXLAN Tunnels) - ✅ ALL UP
+```
+Leaf-1# show nve peers
+Interface Peer-IP          State LearnType Uptime   Router-Mac
+nve1      10.0.2.2         Up    CP        07:42:28 52b6.6784.1b08  (Leaf-2) ✅
+nve1      10.0.2.3         Up    CP        07:41:52 52c0.6d7c.1b08  (Leaf-3) ✅
+nve1      10.0.2.4         Up    CP        07:41:44 521e.a310.1b08  (Leaf-4) ✅
+```
 
 #### Leaf-1 BGP EVPN Summary
 ```
+Leaf-1# show bgp l2vpn evpn summary
 BGP router identifier 10.0.2.1, local AS number 65101
 BGP table version is 98, L2VPN EVPN config peers 4, capable peers 4
 
 Neighbor        V    AS    MsgRcvd    MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
-10.2.1.0        4 65001        594        549       98    0    0 08:59:57 16
-10.2.2.0        4 65002        595        550       98    0    0 09:00:02 16
-10.2.3.0        4 65003        595        548       98    0    0 08:59:56 16
-10.2.4.0        4 65004        615        550       98    0    0 08:59:57 24
+10.2.1.0        4 65001        601        555       98    0    0 09:06:48 16  (Spine-1) ✅
+10.2.2.0        4 65002        602        556       98    0    0 09:06:53 16  (Spine-2) ✅
+10.2.3.0        4 65003        602        554       98    0    0 09:06:47 16  (Spine-3) ✅
+10.2.4.0        4 65004        621        557       98    0    0 09:06:48 24  (Spine-4) ✅
 ```
 
-#### Leaf-1 NVE Peers (VXLAN Tunnels)
+#### Leaf-1 NVE1 Config
 ```
-Interface Peer-IP          State LearnType Uptime   Router-Mac
-nve1      10.0.2.2         Up    CP        07:35:37 52b6.6784.1b08
-nve1      10.0.2.3         Up    CP        07:35:01 52c0.6d7c.1b08
-nve1      10.0.2.4         Up    CP        07:34:53 521e.a310.1b08
+Leaf-1# show run int nve1
+interface nve1
+  no shutdown
+  host-reachability protocol bgp
+  source-interface loopback0
+  member vni 10010
+    ingress-replication protocol bgp
+  member vni 10020
+    ingress-replication protocol bgp
+  member vni 10030
+    ingress-replication protocol bgp
+  member vni 10040
+    ingress-replication protocol bgp
+  member vni 50000 associate-vrf
 ```
 
-#### Leaf-1 NVE VNI Status
+#### Leaf-1 SVI Config (Anycast Gateway)
 ```
-Interface VNI      State Mode Type [BD/VRF]
-nve1      10010    Up    CP   L2 [10]       (VLAN 10)
-nve1      10020    Up    CP   L2 [20]       (VLAN 20)
-nve1      10030    Up    CP   L2 [30]       (VLAN 30)
-nve1      10040    Up    CP   L2 [40]       (VLAN 40)
-nve1      50000    Up    CP   L3 [mylab]    (L3VNI)
+Leaf-1# show run int vlan10
+interface Vlan10
+  description VLAN 10 - Anycast Gateway
+  no shutdown
+  vrf member mylab
+  ip address 192.168.10.1/24
+  fabric forwarding mode anycast-gateway
 ```
 
 #### Spine-1 BGP EVPN Summary
 ```
+Spine-1# show bgp l2vpn evpn summary
 BGP router identifier 10.0.1.1, local AS number 65001
 Neighbor        V    AS    State/PfxRcd
-10.1.1.0        4 65000   Idle          (Super-Spine-1)
-10.1.1.8        4 65000   Idle          (Super-Spine-2)
+10.1.1.0        4 65000   Idle          (Super-Spine-1) ⚠️
+10.1.1.8        4 65000   Idle          (Super-Spine-2) ⚠️
 10.2.1.1        4 65101   16            (Leaf-1) ✅
 10.2.1.3        4 65102   16            (Leaf-2) ✅
 10.2.1.5        4 65103   16            (Leaf-3) ✅
-10.2.1.7        4 65104   Idle          (Leaf-4)
+10.2.1.7        4 65104   Idle          (Leaf-4) ⚠️
 ```
 
-#### Leaf-5 (POD 2) BGP EVPN Summary
+#### Leaf-5 (POD 2) NVE VNI Status - ✅ ALL UP
 ```
+Leaf-5# show nve vni
+Interface VNI      Multicast-group   State Mode Type [BD/VRF]
+nve1      10010    UnicastBGP        Up    CP   L2 [10]       ✅
+nve1      10020    UnicastBGP        Up    CP   L2 [20]       ✅
+nve1      10030    UnicastBGP        Up    CP   L2 [30]       ✅
+nve1      10040    UnicastBGP        Up    CP   L2 [40]       ✅
+nve1      50000    n/a               Up    CP   L3 [mylab]    ✅
+```
+
+#### Leaf-5 NVE Peers
+```
+Leaf-5# show nve peers
+Interface Peer-IP          State LearnType Uptime   Router-Mac
+nve1      10.0.2.6         Up    CP        06:14:23 5227.4721.1b08  (Leaf-6) ✅
+```
+
+#### Leaf-5 BGP EVPN Summary
+```
+Leaf-5# show bgp l2vpn evpn summary
 BGP router identifier 10.0.2.5, local AS number 65105
 Neighbor        V    AS    State/PfxRcd
 10.2.5.0        4 65005   8             (Spine-5) ✅
 10.2.6.0        4 65006   8             (Spine-6) ✅
 ```
 
-#### Leaf-5 NVE Peers
+#### Spine-5 BGP EVPN Summary
 ```
-Interface Peer-IP          State LearnType Uptime   Router-Mac
-nve1      10.0.2.6         Up    CP        06:07:59 5227.4721.1b08   (Leaf-6)
+Spine-5# show bgp l2vpn evpn summary
+BGP router identifier 10.0.1.5, local AS number 65005
+Neighbor        V    AS    State/PfxRcd
+10.2.5.1        4 65105   8             (Leaf-5) ✅
+10.2.5.3        4 65106   8             (Leaf-6) ✅
 ```
+
+#### All Leafs NVE Status Summary
+| Leaf | NVE VNIs | NVE Peers | BGP EVPN |
+|------|----------|-----------|----------|
+| Leaf-1 | 5 Up | 3 peers (Leaf-2,3,4) | 4 spines Up |
+| Leaf-2 | 5 Up | 3 peers (Leaf-1,3,4) | 4 spines Up |
+| Leaf-3 | 5 Up | 3 peers (Leaf-1,2,4) | 4 spines Up |
+| Leaf-4 | 5 Up | 3 peers (Leaf-1,2,3) | 4 spines Up |
+| Leaf-5 | 5 Up | 1 peer (Leaf-6) | 2 spines Up |
+| Leaf-6 | 5 Up | 1 peer (Leaf-5) | 2 spines Up |
 
 ### Known Issues
 
